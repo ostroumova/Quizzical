@@ -1,0 +1,102 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+* {
+  box-sizing: border-box;
+}
+body,
+html {
+  height: 100%;
+  margin: 0;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: "Karla", sans-serif;
+  color: #293264;
+}
+
+.intro-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-page-button {
+  background-color: #4d5b9e;
+  color: white;
+  width: 193px;
+  height: 52px;
+  border-radius: 15px;
+  margin-top: 10px;
+  border: none;
+}
+
+.game-title {
+  font-family: "Karla";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 31.25px;
+  line-height: 37px;
+  text-align: center;
+  color: #293264;
+}
+
+.game-invintation {
+  margin-top: 5px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19.36px;
+  text-align: center;
+}
+
+/* blobs */
+.blobe-top {
+  position: absolute;
+  width: 297px;
+  height: 235px;
+  right: -115px;
+  top: -100px;
+  transform: rotate(-128.49deg);
+  background-color: #fffad1;
+  /* border-radius: 25%; */
+  clip-path: circle(45% at 50% 50%);
+}
+.blobe-bottom {
+  position: absolute;
+  width: 297px;
+  height: 235px;
+  left: -149px;
+  bottom: -50px;
+  background-color: #deebf8;
+  border-radius: 25%;
+}
+
+.answer-options {
+  display: flex;
+  justify-content: space-between;
+}
+
+.answer-input {
+  display: none;
+}
+
+.radio-label {
+  cursor: pointer;
+  border: 0.79px solid #4d5b9e;
+  border-radius: 10px;
+  padding: 5px;
+  color: #293264;
+}
+
+.answer-input:checked + .radio-label {
+  background-color: #d6dbf5;
+}
