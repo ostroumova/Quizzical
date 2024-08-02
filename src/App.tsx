@@ -9,6 +9,8 @@ import Question from "./components/Question";
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState("intro-page");
   const [questions, setQuestions] = useState<QuestionType[]>([]);
+  const [quantityOfCorrectAnswers, setQuantityOfCorrectAnswers] = useState(0);
+  const [userAnswers, setUserAnswers] = useState<string[]>([]);
 
   useEffect(() => {
     function fetchQuestion() {
@@ -38,6 +40,23 @@ const App: React.FC = () => {
     return arrayOfIncorrectOptions;
   };
 
+  const handleAnswerChange = (index: number, answer: string) => {
+    const newAnswers = [...userAnswers];
+    newAnswers[index] = answer;
+    setUserAnswers(newAnswers);
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    let correctCount = 0;
+    questions.forEach((question, index) => {
+      if (userAnswers[index] === question.correct_answer) {
+        correctCount++;
+      }
+    });
+    setQuantityOfCorrectAnswers(correctCount);
+  };
+
   const questionsContainer = questions.map((question, index) => {
     const modifiedQuestion = he.decode(question.question);
     const answerOptions = [
@@ -46,12 +65,15 @@ const App: React.FC = () => {
       ),
     ];
     return (
-      <Question
-        correctAnswer={question.correct_answer}
-        key={index}
-        question={modifiedQuestion}
-        answerOptions={answerOptions}
-      />
+      <form key={index}>
+        <Question
+          correctAnswer={question.correct_answer}
+          key={index}
+          question={modifiedQuestion}
+          answerOptions={answerOptions}
+          onAnswerChange={(answer: string) => handleAnswerChange(index, answer)}
+        />
+      </form>
     );
   });
 
@@ -68,7 +90,17 @@ const App: React.FC = () => {
         </div>
       )}
       {currentPage === "game" && (
-        <form className="question-container"> {questionsContainer}</form>
+        <div className="question-container">
+          {questionsContainer}
+          <div className="bottom-bar">
+            <h3>You scored {quantityOfCorrectAnswers}/5 correct answers</h3>
+            <form onSubmit={handleSubmit}>
+              <button className="submit-btn" type="submit">
+                Check answers
+              </button>
+            </form>
+          </div>
+        </div>
       )}
       <div className="blobe-bottom"></div>
     </main>

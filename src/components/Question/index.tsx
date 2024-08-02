@@ -8,11 +8,14 @@ type QuestionComponentProps = {
   question: string;
   answerOptions: string[];
   correctAnswer: string;
+  onAnswerChange: (answer: string) => void;
 };
 
 const Question: React.FC<QuestionComponentProps> = ({
   question,
   answerOptions,
+  correctAnswer,
+  onAnswerChange,
 }) => {
   const [transformedAnswerOptions, setTransformedAnswerOptions] = useState(
     createTranfrormedAnswerOptions(answerOptions)
@@ -29,9 +32,11 @@ const Question: React.FC<QuestionComponentProps> = ({
   function clickAnswer(id: string) {
     setTransformedAnswerOptions((oldAnswer) =>
       oldAnswer.map((answer) => {
-        return answer.id === id
-          ? { ...answer, isClicked: !answer.isClicked }
-          : answer;
+        if (answer.id === id) {
+          onAnswerChange(answer.answer);
+          return { ...answer, isClicked: !answer.isClicked };
+        }
+        return { ...answer, isClicked: false };
       })
     );
   }
