@@ -8,6 +8,7 @@ import Question from "./components/Question";
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState("intro-page");
+  const [validationScreen, setValidationScreen] = useState("check-answers");
   const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [quantityOfCorrectAnswers, setQuantityOfCorrectAnswers] = useState(0);
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
@@ -55,6 +56,7 @@ const App: React.FC = () => {
       }
     });
     setQuantityOfCorrectAnswers(correctCount);
+    setValidationScreen("validation");
   };
 
   const questionsContainer = questions.map((question, index) => {
@@ -93,7 +95,10 @@ const App: React.FC = () => {
         <div className="question-container">
           {questionsContainer}
           <div className="bottom-bar">
-            <h3>You scored {quantityOfCorrectAnswers}/5 correct answers</h3>
+            {validationScreen === "validation" && (
+              <h3>You scored {quantityOfCorrectAnswers}/5 correct answers</h3>
+            )}
+
             <form onSubmit={handleSubmit}>
               <button className="submit-btn" type="submit">
                 Check answers
