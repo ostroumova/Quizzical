@@ -102,9 +102,20 @@ main {
   background-color: #d6dbf5;
 }
 
+.answer-input:checked + .correct {
+  background-color: #94d7a2;
+}
+.answer-input + .correct {
+  background-color: #94d7a2;
+}
+.answer-input:checked + .incorrect {
+  background-color: #f8bcbc;
+}
+
 .bottom-bar {
   display: flex;
   justify-content: space-around;
+  align-items: center;
   margin-top: 50px;
 }
 

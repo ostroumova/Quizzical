@@ -5,4 +5,6 @@ export type QuestionType = {
   incorrect_answers: string[];
   question: string;
   type: string;
+  isAnswered: boolean;
+  id: string;
 };

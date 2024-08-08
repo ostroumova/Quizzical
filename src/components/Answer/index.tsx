@@ -4,6 +4,8 @@ type AnswerProps = {
   id: string;
   value: string;
   isClicked: boolean;
+  isAnswersSubmitted: boolean;
+  isCorrect: boolean;
   clickAnswer: () => void;
 };
 
@@ -11,8 +13,14 @@ const Answer: React.FC<AnswerProps> = ({
   id,
   value,
   isClicked,
+  isCorrect,
   clickAnswer,
+  isAnswersSubmitted,
 }) => {
+  const isCorrectAndSubmitted =
+    isAnswersSubmitted && isCorrect ? "correct" : "";
+  const isIncorrectAndSubmitted =
+    isAnswersSubmitted && !isCorrect ? "incorrect" : "";
   return (
     <div className="answer-option">
       <input
@@ -23,7 +31,10 @@ const Answer: React.FC<AnswerProps> = ({
         checked={isClicked}
         onChange={clickAnswer}
       />
-      <label htmlFor={id} className="radio-label">
+      <label
+        htmlFor={id}
+        className={`radio-label ${isCorrectAndSubmitted} ${isIncorrectAndSubmitted}`}
+      >
         {value}
       </label>
     </div>

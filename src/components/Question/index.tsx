@@ -3,19 +3,28 @@ import Answer from "../Answer";
 import { nanoid } from "nanoid";
 import { useState } from "react";
 import he from "he";
+import { QuestionType } from "../../types";
 
 type QuestionComponentProps = {
   question: string;
   answerOptions: string[];
-  correctAnswer: string;
   onAnswerChange: (answer: string) => void;
+  questionId: string;
+  isAnswersSubmitted: boolean;
+  correctAnswer: string;
+  setQuestions: (
+    updateFn: (prevQuestions: QuestionType[]) => QuestionType[]
+  ) => void;
 };
 
 const Question: React.FC<QuestionComponentProps> = ({
   question,
   answerOptions,
-  correctAnswer,
   onAnswerChange,
+  setQuestions,
+  questionId,
+  isAnswersSubmitted,
+  correctAnswer,
 }) => {
   const [transformedAnswerOptions, setTransformedAnswerOptions] = useState(
     createTranfrormedAnswerOptions(answerOptions)
@@ -26,14 +35,20 @@ const Question: React.FC<QuestionComponentProps> = ({
       answer: he.decode(option),
       isClicked: false,
       id: nanoid(),
+      isCorrect: option === correctAnswer,
     }));
   }
 
-  function clickAnswer(id: string) {
+  function clickAnswer(id: string, questionId: string) {
     setTransformedAnswerOptions((oldAnswer) =>
       oldAnswer.map((answer) => {
         if (answer.id === id) {
           onAnswerChange(answer.answer);
+          setQuestions((prevQuestions) =>
+            prevQuestions.map((q) =>
+              q.id === questionId ? { ...q, isAnswered: true } : q
+            )
+          );
           return { ...answer, isClicked: !answer.isClicked };
         }
         return { ...answer, isClicked: false };
@@ -46,8 +61,10 @@ const Question: React.FC<QuestionComponentProps> = ({
       key={answer.id}
       id={answer.id}
       value={answer.answer}
+      isCorrect={answer.isCorrect}
       isClicked={answer.isClicked}
-      clickAnswer={() => clickAnswer(answer.id)}
+      isAnswersSubmitted={isAnswersSubmitted}
+      clickAnswer={() => clickAnswer(answer.id, questionId)}
     />
   ));
 

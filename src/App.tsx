@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import he from "he";
+import { nanoid } from "nanoid";
 
 import "./App.css";
 import { QuestionType } from "./types";
@@ -12,13 +13,21 @@ const App: React.FC = () => {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [quantityOfCorrectAnswers, setQuantityOfCorrectAnswers] = useState(0);
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
+  const [isAnswersSubmitted, setIsAnswersSubmitted] = useState(false);
+  console.log(questions, "questions");
 
   useEffect(() => {
     function fetchQuestion() {
       fetch("https://opentdb.com/api.php?amount=5&type=multiple")
         .then((response) => response.json())
         .then((data) => {
-          setQuestions(data.results);
+          const updatedResults = data.results.map((question: QuestionType) => ({
+            ...question,
+            isAnswered: false,
+            id: nanoid(),
+          }));
+
+          setQuestions(updatedResults);
         });
     }
     fetchQuestion();
@@ -49,14 +58,18 @@ const App: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    let correctCount = 0;
-    questions.forEach((question, index) => {
-      if (userAnswers[index] === question.correct_answer) {
-        correctCount++;
-      }
-    });
-    setQuantityOfCorrectAnswers(correctCount);
-    setValidationScreen("validation");
+    const allAnswered = questions.every((question) => question.isAnswered);
+    if (allAnswered) {
+      let correctCount = 0;
+      questions.forEach((question, index) => {
+        if (userAnswers[index] === question.correct_answer) {
+          correctCount++;
+        }
+      });
+      setQuantityOfCorrectAnswers(correctCount);
+      setValidationScreen("validation");
+      setIsAnswersSubmitted(true);
+    }
   };
 
   const questionsContainer = questions.map((question, index) => {
@@ -67,13 +80,15 @@ const App: React.FC = () => {
       ),
     ];
     return (
-      <form key={index}>
+      <form key={question.id}>
         <Question
-          correctAnswer={question.correct_answer}
-          key={index}
+          questionId={question.id}
           question={modifiedQuestion}
           answerOptions={answerOptions}
           onAnswerChange={(answer: string) => handleAnswerChange(index, answer)}
+          setQuestions={setQuestions}
+          isAnswersSubmitted={isAnswersSubmitted}
+          correctAnswer={question.correct_answer}
         />
       </form>
     );
@@ -101,7 +116,9 @@ const App: React.FC = () => {
 
             <form onSubmit={handleSubmit}>
               <button className="submit-btn" type="submit">
-                Check answers
+                {validationScreen === "validation"
+                  ? "Play again"
+                  : "Check answers"}
               </button>
             </form>
           </div>
